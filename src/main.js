@@ -1,5 +1,13 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
+import { firestorePlugin } from 'vuefire'
 
-createApp(App).use(router).mount("#app");
+const app = createApp(App);
+
+//app.use(firestorePlugin);
+app.use(router);
+app.use(firestorePlugin);
+app.config.productionTip = false;
+
+app.mount("#app");
