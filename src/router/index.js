@@ -4,12 +4,8 @@ import { auth } from "../firebase.js"
 
 const routes = [
   {
-    path: "*",
-    redirect: "/"
-  },
-  {
     path: "/",
-    name: "Inicio",
+    name: "inicio",
     component: Inicio,
     meta: {
       requiresAuth: true
@@ -17,7 +13,7 @@ const routes = [
   },
   {
     path: "/login",
-    name: "Login",
+    name: "login",
     component: () => import("../views/Login.vue"),
   },
 ];
@@ -29,12 +25,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
-  if(requiresAuth) {
-    auth.onAuthStateChanged( (user) => {
-      if (!user) next('/login')
-      else next();
-    })
-  } else next()
+  auth.onAuthStateChanged( (user) => {
+    if (requiresAuth && !user) next('/login')
+    else if (to.name == 'login' && user) next('/')
+    else next();
+  })
 });
 
 export default router;

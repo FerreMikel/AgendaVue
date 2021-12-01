@@ -1,4 +1,4 @@
-# agenda
+# Agenda Vue
 
 ## Project setup
 ```
