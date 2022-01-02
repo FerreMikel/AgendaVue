@@ -27,11 +27,14 @@
           <li class="hidden">
             <a href="#page-top"></a>
           </li>
-          <li class="page-scroll">
-            <a href="#contactos">Contactos</a>
+          <li class="page-scroll" v-on:click="this.$router.push('/')">
+            <a>Contactos</a>
           </li>
-          <li class="page-scroll">
-            <a href="#nuevo">Añadir contacto</a>
+          <li
+            class="page-scroll"
+            v-on:click="this.$router.push('nuevo-contacto')"
+          >
+            <a>Añadir contacto</a>
           </li>
         </ul>
       </div>

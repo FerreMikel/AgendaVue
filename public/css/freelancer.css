@@ -465,7 +465,7 @@ footer .footer-below {
     transform: translate(-50%, -50%);
 }
 
-#contactos {
+section {
     margin-top: 20px;
 }
 
@@ -478,7 +478,7 @@ footer .footer-below {
 }
 
 @media(min-width:768px) {
-    #contactos {
+    section {
         margin-top: 50px;
     }
 }

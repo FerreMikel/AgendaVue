@@ -35,7 +35,10 @@
             <p>{{ contact.data().tel }}</p>
           </div>
           <div class="col-xs-1">
-            <button class="btn btn-danger btn-sm">
+            <button
+              class="btn btn-danger btn-sm"
+              v-on:click="eliminarContacto(contact.id)"
+            >
               <span class="glyphicon glyphicon-remove"></span>
             </button>
           </div>
@@ -44,7 +47,12 @@
       <div>
         <div class="row no-contacts" v-if="contacts.length == 0">
           <p class="text-center">No se ha encontrado ningún contacto.</p>
-          <button class="btn btn-success">Añadir contacto</button>
+          <button
+            class="btn btn-success"
+            v-on:click="this.$router.push('nuevo-contacto')"
+          >
+            Añadir contacto
+          </button>
         </div>
       </div>
     </div>
@@ -53,7 +61,7 @@
 
 <script>
 import { firestore, auth } from "../firebase";
-import { getDocs, query, collection } from "firebase/firestore";
+import { getDocs, query, collection, doc, deleteDoc } from "firebase/firestore";
 
 export default {
   data() {
@@ -62,12 +70,23 @@ export default {
       contacts: [],
     };
   },
+  methods: {
+    async loadData() {
+      const q = query(
+        collection(firestore, `users/${auth.currentUser.uid}/contacts`)
+      );
+      const contacts = await getDocs(q);
+      this.contacts = contacts.docs;
+    },
+    async eliminarContacto(id) {
+      await deleteDoc(
+        doc(firestore, `users/${auth.currentUser.uid}/contacts`, id)
+      );
+      this.loadData();
+    },
+  },
   async created() {
-    const q = query(
-      collection(firestore, `users/${auth.currentUser.uid}/contacts`)
-    );
-    const contacts = await getDocs(q);
-    this.contacts = contacts.docs;
+    await this.loadData();
     this.loading = false;
   },
 };

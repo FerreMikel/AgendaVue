@@ -1,15 +1,29 @@
 <template>
-  <div class="login-box">
+  <section id="nuevo-contacto">
     <div class="container">
       <div class="row">
         <div class="col-lg-12 text-center">
-          <h2>Iniciar sesión</h2>
+          <h2>Nuevo contacto</h2>
           <hr class="star-primary" />
         </div>
       </div>
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2">
-          <form @submit.prevent="login" novalidate>
+          <form @submit.prevent="anadirContacto" novalidate>
+            <div class="row control-group">
+              <div
+                class="form-group col-xs-12 floating-label-form-group controls"
+              >
+                <label>Nombre</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nombre"
+                  required
+                  v-model="form.name"
+                />
+              </div>
+            </div>
             <div class="row control-group">
               <div
                 class="form-group col-xs-12 floating-label-form-group controls"
@@ -29,13 +43,13 @@
               <div
                 class="form-group col-xs-12 floating-label-form-group controls"
               >
-                <label>Contraseña</label>
+                <label>Telefono</label>
                 <input
-                  type="password"
+                  type="tel"
                   class="form-control"
-                  placeholder="Contraseña"
+                  placeholder="Teléfono"
                   required
-                  v-model="form.password"
+                  v-model="form.tel"
                 />
               </div>
             </div>
@@ -44,7 +58,7 @@
             <div class="row">
               <div class="form-group col-xs-12">
                 <button type="submit" class="btn btn-success btn-lg">
-                  Iniciar sesión
+                  Guardar
                 </button>
               </div>
             </div>
@@ -55,56 +69,38 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
-import { auth } from "../firebase.js";
-import { signInWithEmailAndPassword } from "firebase/auth";
-
+import { firestore, auth } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 export default {
   data() {
     return {
       form: {
+        name: "",
         email: "",
-        password: "",
+        tel: null,
       },
       error: "",
     };
   },
   methods: {
-    login() {
-      if (this.form.email.length == 0 || this.form.password.length == 0) {
+    async anadirContacto() {
+      if (
+        this.form.name.length == 0 ||
+        this.form.email.length == 0 ||
+        this.form.tel.length == 0
+      ) {
         this.error = "Rellena todos los campos";
         return;
       }
-      signInWithEmailAndPassword(auth, this.form.email, this.form.password)
-        .then((data) => {
-          console.log(data);
-          this.$router.replace({ name: "inicio" });
-        })
-        .catch((err) => {
-          switch (err.code) {
-            case "auth/invalid-email":
-              this.error = "Correo electrónico no válido";
-              break;
-            case "auth/user-disabled":
-              this.error = "Tu cuenta ha sido deshabilitada";
-              break;
-            case "auth/user-not-found":
-              this.error =
-                "No existe ninguna cuenta con ese correo electrónico";
-              break;
-            case "auth/wrong-password":
-              this.error = "Contraseña incorrecta";
-              break;
-
-            default:
-              this.error = "Ocurrió un al iniciar sesión";
-              console.log(err);
-              break;
-          }
-        });
+      await addDoc(
+        collection(firestore, `users/${auth.currentUser.uid}/contacts`),
+        this.form
+      );
+      this.$router.push("/");
     },
   },
 };

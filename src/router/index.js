@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Inicio from "../views/Inicio.vue";
+import NuevoContacto from "../views/NuevoContacto.vue";
 import { auth } from "../firebase.js"
 
 const routes = [
@@ -7,6 +8,14 @@ const routes = [
     path: "/",
     name: "inicio",
     component: Inicio,
+    meta: {
+      requiresAuth: true
+    },
+  },
+  {
+    path: "/nuevo-contacto",
+    name: "nuevo-contacto",
+    component: NuevoContacto,
     meta: {
       requiresAuth: true
     },
