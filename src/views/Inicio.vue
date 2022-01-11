@@ -24,15 +24,21 @@
             <span class="sr-only">Loading...</span>
           </div>
         </div>
-        <div v-for="contact in contacts" v-bind:key="contact" class="row">
+        <div
+          v-for="contact in contacts"
+          v-bind:key="contact"
+          class="row"
+          vocab="http://xmlns.com/foaf/0.1/"
+          typeof="Person"
+        >
           <div class="col-xs-4">
-            <p>{{ contact.data().name }}</p>
+            <p property="name">{{ contact.data().name }}</p>
           </div>
           <div class="col-xs-4">
-            <p>{{ contact.data().email }}</p>
+            <p property="mbox">{{ contact.data().email }}</p>
           </div>
           <div class="col-xs-3">
-            <p>{{ contact.data().tel }}</p>
+            <p property="phone">{{ contact.data().tel }}</p>
           </div>
           <div class="col-xs-1">
             <button
@@ -44,16 +50,19 @@
           </div>
         </div>
       </div>
-      <div>
-        <div class="row no-contacts" v-if="contacts.length == 0">
-          <p class="text-center">No se ha encontrado ningún contacto.</p>
-          <button
-            class="btn btn-success"
-            v-on:click="this.$router.push('nuevo-contacto')"
-          >
-            Añadir contacto
-          </button>
-        </div>
+      <div class="row no-contacts" v-if="contacts.length == 0">
+        <p class="text-center">No se ha encontrado ningún contacto.</p>
+        <button
+          class="btn btn-success"
+          v-on:click="this.$router.push('nuevo-contacto')"
+        >
+          Añadir contacto
+        </button>
+      </div>
+      <div class="row cerrar-sesion">
+        <button class="btn btn-danger" v-on:click="cerrarSesion">
+          Cerrar sesión
+        </button>
       </div>
     </div>
   </section>
@@ -62,6 +71,7 @@
 <script>
 import { firestore, auth } from "../firebase";
 import { getDocs, query, collection, doc, deleteDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 export default {
   data() {
@@ -83,6 +93,10 @@ export default {
         doc(firestore, `users/${auth.currentUser.uid}/contacts`, id)
       );
       this.loadData();
+    },
+    cerrarSesion() {
+      signOut(auth);
+      this.$router.replace("/login");
     },
   },
   async created() {

@@ -1,7 +1,7 @@
 <template>
   <!-- Navigation -->
   <nav
-    v-if="$route.name !== 'login'"
+    v-if="$route.name !== 'login' && $route.name !== 'sign-up'"
     class="navbar navbar-default navbar-fixed-top"
   >
     <div class="container">
@@ -45,7 +45,7 @@
   <router-view />
   <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
   <div
-    v-if="$route.name !== 'login'"
+    v-if="$route.name !== 'login' && $route.name !== 'sign-up'"
     class="scroll-top page-scroll visible-xs visible-sm"
   >
     <a class="btn btn-primary" href="#page-top">

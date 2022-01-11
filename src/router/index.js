@@ -25,6 +25,11 @@ const routes = [
     name: "login",
     component: () => import("../views/Login.vue"),
   },
+  {
+    path: "/sign-up",
+    name: "sign-up",
+    component: () => import("../views/SignUp.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -36,7 +41,7 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
   auth.onAuthStateChanged( (user) => {
     if (requiresAuth && !user) next('/login')
-    else if (to.name == 'login' && user) next('/')
+    else if ((to.name == 'login' || to.name == 'sign-up') && user) next('/')
     else next();
   })
 });

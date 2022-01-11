@@ -75,7 +75,14 @@
 <script>
 import { firestore, auth } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
+
+import useVuelidate from "@vuelidate/core";
+import { required, email, integer } from "@vuelidate/validators";
+
 export default {
+  setup() {
+    return { v$: useVuelidate() };
+  },
   data() {
     return {
       form: {
@@ -86,6 +93,15 @@ export default {
       error: "",
     };
   },
+  validations() {
+    return {
+      form: {
+        name: { required },
+        email: { required, email },
+        tel: { required, integer },
+      },
+    };
+  },
   methods: {
     async anadirContacto() {
       if (
@@ -94,6 +110,12 @@ export default {
         this.form.tel.length == 0
       ) {
         this.error = "Rellena todos los campos";
+        return;
+      }
+      const isFormCorrect = await this.v$.$validate();
+      if (!isFormCorrect) {
+        this.error =
+          "Formato incorrecto. Revisa el correo electrónico y el teléfono";
         return;
       }
       await addDoc(
